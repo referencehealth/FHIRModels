@@ -62,7 +62,7 @@ open class BackboneElement: Element {
 	}
 	
 	/// Encodable
-	public override func encode(to encoder: Encoder) throws {
+	open override func encode(to encoder: Encoder) throws {
 		var _container = encoder.container(keyedBy: CodingKeys.self)
 		
 		// Encode all our properties
@@ -72,7 +72,7 @@ open class BackboneElement: Element {
 	
 	// MARK: - Equatable & Hashable
 	
-	public override func isEqual(to _other: Any?) -> Bool {
+	open override func isEqual(to _other: Any?) -> Bool {
 		guard let _other = _other as? BackboneElement else {
 			return false
 		}
@@ -82,7 +82,7 @@ open class BackboneElement: Element {
 		return modifierExtension == _other.modifierExtension
 	}
 	
-	public override func hash(into hasher: inout Hasher) {
+	open override func hash(into hasher: inout Hasher) {
 		super.hash(into: &hasher)
 		hasher.combine(modifierExtension)
 	}

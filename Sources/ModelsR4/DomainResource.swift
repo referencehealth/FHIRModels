@@ -89,7 +89,7 @@ open class DomainResource: Resource {
 	}
 	
 	/// Encodable
-	public override func encode(to encoder: Encoder) throws {
+	open override func encode(to encoder: Encoder) throws {
 		var _container = encoder.container(keyedBy: CodingKeys.self)
 		
 		// Encode all our properties
@@ -102,7 +102,7 @@ open class DomainResource: Resource {
 	
 	// MARK: - Equatable & Hashable
 	
-	public override func isEqual(to _other: Any?) -> Bool {
+	open override func isEqual(to _other: Any?) -> Bool {
 		guard let _other = _other as? DomainResource else {
 			return false
 		}
@@ -115,7 +115,7 @@ open class DomainResource: Resource {
 		    && text == _other.text
 	}
 	
-	public override func hash(into hasher: inout Hasher) {
+	open override func hash(into hasher: inout Hasher) {
 		super.hash(into: &hasher)
 		hasher.combine(contained)
 		hasher.combine(`extension`)
