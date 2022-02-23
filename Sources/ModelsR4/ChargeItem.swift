@@ -60,7 +60,7 @@ open class ChargeItem: DomainResource {
 	public var partOf: [Reference]?
 	
 	/// A code that identifies the charge, like a billing code
-	public var code: CodeableConcept
+	public var code: CodeableConcept?
 	
 	/// Individual service was done for/to
 	public var subject: Reference
@@ -125,8 +125,7 @@ open class ChargeItem: DomainResource {
 	public var supportingInformation: [Reference]?
 	
 	/// Designated initializer taking all required properties
-	public init(code: CodeableConcept, status: FHIRPrimitive<ChargeItemStatus>, subject: Reference) {
-		self.code = code
+	public init(status: FHIRPrimitive<ChargeItemStatus>, subject: Reference) {
 		self.status = status
 		self.subject = subject
 		super.init()
@@ -136,7 +135,7 @@ open class ChargeItem: DomainResource {
 	public convenience init(
 							account: [Reference]? = nil,
 							bodysite: [CodeableConcept]? = nil,
-							code: CodeableConcept,
+							code: CodeableConcept? = nil,
 							contained: [ResourceProxy]? = nil,
 							context: Reference? = nil,
 							costCenter: Reference? = nil,
@@ -169,9 +168,10 @@ open class ChargeItem: DomainResource {
 							supportingInformation: [Reference]? = nil,
 							text: Narrative? = nil)
 	{
-		self.init(code: code, status: status, subject: subject)
+		self.init(status: status, subject: subject)
 		self.account = account
 		self.bodysite = bodysite
+        self.code = code
 		self.contained = contained
 		self.context = context
 		self.costCenter = costCenter
@@ -310,7 +310,7 @@ open class ChargeItem: DomainResource {
 		// Encode all our properties
 		try account?.encode(on: &_container, forKey: .account)
 		try bodysite?.encode(on: &_container, forKey: .bodysite)
-		try code.encode(on: &_container, forKey: .code)
+		try code?.encode(on: &_container, forKey: .code)
 		try context?.encode(on: &_container, forKey: .context)
 		try costCenter?.encode(on: &_container, forKey: .costCenter)
 		try definitionCanonical?.encode(on: &_container, forKey: .definitionCanonical, auxiliaryKey: ._definitionCanonical)
