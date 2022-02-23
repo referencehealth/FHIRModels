@@ -244,7 +244,7 @@ open class ChargeItem: DomainResource {
 		// Decode all our properties
 		self.account = try [Reference](from: _container, forKeyIfPresent: .account)
 		self.bodysite = try [CodeableConcept](from: _container, forKeyIfPresent: .bodysite)
-		self.code = try CodeableConcept(from: _container, forKey: .code)
+		self.code = try CodeableConcept(from: _container, forKeyIfPresent: .code)
 		self.context = try Reference(from: _container, forKeyIfPresent: .context)
 		self.costCenter = try Reference(from: _container, forKeyIfPresent: .costCenter)
 		self.definitionCanonical = try [FHIRPrimitive<Canonical>](from: _container, forKeyIfPresent: .definitionCanonical, auxiliaryKey: ._definitionCanonical)
