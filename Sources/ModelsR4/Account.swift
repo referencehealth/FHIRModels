@@ -50,7 +50,7 @@ open class Account: DomainResource {
 	/// The party(s) that are responsible for covering the payment of this account, and what order should they be
 	/// applied to the account
 	public var coverage: [AccountCoverage]?
-	
+    
 	/// Entity managing the Account
 	public var owner: Reference?
 	
@@ -62,10 +62,18 @@ open class Account: DomainResource {
 	
 	/// Reference to a parent Account
 	public var partOf: Reference?
+    
+    /// Reference Health added property
+    public var outstandingBalance: [AccountFunds]
+    
+    /// Reference Health added property
+    public var unusedFunds: [AccountFunds]
 	
 	/// Designated initializer taking all required properties
-	public init(status: FHIRPrimitive<AccountStatus>) {
+    public init(status: FHIRPrimitive<AccountStatus>, outstandingBalance: [AccountFunds], unusedFunds: [AccountFunds]) {
 		self.status = status
+        self.outstandingBalance = outstandingBalance
+        self.unusedFunds = unusedFunds
 		super.init()
 	}
 	
@@ -83,15 +91,17 @@ open class Account: DomainResource {
 							meta: Meta? = nil,
 							modifierExtension: [Extension]? = nil,
 							name: FHIRPrimitive<FHIRString>? = nil,
+                            outstandingBalance: [AccountFunds],
 							owner: Reference? = nil,
 							partOf: Reference? = nil,
 							servicePeriod: Period? = nil,
 							status: FHIRPrimitive<AccountStatus>,
 							subject: [Reference]? = nil,
 							text: Narrative? = nil,
-							type: CodeableConcept? = nil)
+							type: CodeableConcept? = nil,
+                            unusedFunds: [AccountFunds])
 	{
-		self.init(status: status)
+        self.init(status: status, outstandingBalance: outstandingBalance, unusedFunds: unusedFunds)
 		self.contained = contained
 		self.coverage = coverage
 		self.description_fhir = description_fhir
@@ -120,12 +130,14 @@ open class Account: DomainResource {
 		case guarantor
 		case identifier
 		case name; case _name
+        case outstandingBalance
 		case owner
 		case partOf
 		case servicePeriod
 		case status; case _status
 		case subject
 		case type
+        case unusedFunds
 	}
 	
 	/// Initializer for Decodable
@@ -138,12 +150,14 @@ open class Account: DomainResource {
 		self.guarantor = try [AccountGuarantor](from: _container, forKeyIfPresent: .guarantor)
 		self.identifier = try [Identifier](from: _container, forKeyIfPresent: .identifier)
 		self.name = try FHIRPrimitive<FHIRString>(from: _container, forKeyIfPresent: .name, auxiliaryKey: ._name)
+        self.outstandingBalance = try [AccountFunds](from: _container, forKey: .outstandingBalance)
 		self.owner = try Reference(from: _container, forKeyIfPresent: .owner)
 		self.partOf = try Reference(from: _container, forKeyIfPresent: .partOf)
 		self.servicePeriod = try Period(from: _container, forKeyIfPresent: .servicePeriod)
 		self.status = try FHIRPrimitive<AccountStatus>(from: _container, forKey: .status, auxiliaryKey: ._status)
 		self.subject = try [Reference](from: _container, forKeyIfPresent: .subject)
 		self.type = try CodeableConcept(from: _container, forKeyIfPresent: .type)
+        self.unusedFunds = try [AccountFunds](from: _container, forKey: .unusedFunds)
 		try super.init(from: decoder)
 	}
 	
@@ -157,12 +171,14 @@ open class Account: DomainResource {
 		try guarantor?.encode(on: &_container, forKey: .guarantor)
 		try identifier?.encode(on: &_container, forKey: .identifier)
 		try name?.encode(on: &_container, forKey: .name, auxiliaryKey: ._name)
+        try outstandingBalance.encode(on: &_container, forKey: .outstandingBalance)
 		try owner?.encode(on: &_container, forKey: .owner)
 		try partOf?.encode(on: &_container, forKey: .partOf)
 		try servicePeriod?.encode(on: &_container, forKey: .servicePeriod)
 		try status.encode(on: &_container, forKey: .status, auxiliaryKey: ._status)
 		try subject?.encode(on: &_container, forKey: .subject)
 		try type?.encode(on: &_container, forKey: .type)
+        try unusedFunds.encode(on: &_container, forKey: .unusedFunds)
 		try super.encode(to: encoder)
 	}
 	
@@ -180,12 +196,14 @@ open class Account: DomainResource {
 		    && guarantor == _other.guarantor
 		    && identifier == _other.identifier
 		    && name == _other.name
+            && outstandingBalance == _other.outstandingBalance
 		    && owner == _other.owner
 		    && partOf == _other.partOf
 		    && servicePeriod == _other.servicePeriod
 		    && status == _other.status
 		    && subject == _other.subject
 		    && type == _other.type
+            && unusedFunds == _other.unusedFunds
 	}
 	
 	public override func hash(into hasher: inout Hasher) {
@@ -195,13 +213,67 @@ open class Account: DomainResource {
 		hasher.combine(guarantor)
 		hasher.combine(identifier)
 		hasher.combine(name)
+        hasher.combine(outstandingBalance)
 		hasher.combine(owner)
 		hasher.combine(partOf)
 		hasher.combine(servicePeriod)
 		hasher.combine(status)
 		hasher.combine(subject)
 		hasher.combine(type)
+        hasher.combine(unusedFunds)
 	}
+}
+
+/**
+  Reference Health created resource. The funds or balance associated with an account.
+ */
+open class AccountFunds: BackboneElement {
+    public var value: FHIRPrimitive<FHIRDecimal>
+    public var currency: FHIRPrimitive<FHIRString>
+    
+    public init(value: FHIRPrimitive<FHIRDecimal>, currency: FHIRPrimitive<FHIRString>) {
+        self.value = value
+        self.currency = currency
+        super.init()
+    }
+    
+    private enum CodingKeys: String, CodingKey {
+        case value
+        case currency
+    }
+    
+    public required init(from decoder: Decoder) throws {
+        let _container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.value = try FHIRPrimitive<FHIRDecimal>(from: _container, forKey: .value)
+        self.currency = try FHIRPrimitive<FHIRString>(from: _container, forKey: .currency)
+        try super.init(from: decoder)
+    }
+    
+    public override func encode(to encoder: Encoder) throws {
+        var _container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try value.encode(on: &_container, forKey: .value)
+        try currency.encode(on: &_container, forKey: .currency)
+        try super.encode(to: encoder)
+    }
+    
+    public override func isEqual(to _other: Any?) -> Bool {
+        guard let _other = _other as? AccountFunds else {
+            return false
+        }
+        guard super.isEqual(to: _other) else {
+            return false
+        }
+        return value == _other.value
+        && currency == _other.currency
+    }
+    
+    public override func hash(into hasher: inout Hasher) {
+        super.hash(into: &hasher)
+        hasher.combine(value)
+        hasher.combine(currency)
+    }
 }
 
 /**
