@@ -33,7 +33,7 @@ open class Account: DomainResource {
 	public var identifier: [Identifier]?
 	
 	/// Indicates whether the account is presently used/usable or not.
-	public var status: FHIRPrimitive<AccountStatus>
+	public var status: FHIRPrimitive<AccountStatus>?
 	
 	/// E.g. patient, expense, depreciation
 	public var type: CodeableConcept?
@@ -70,8 +70,7 @@ open class Account: DomainResource {
     public var unusedFunds: [AccountFunds]
 	
 	/// Designated initializer taking all required properties
-    public init(status: FHIRPrimitive<AccountStatus>, outstandingBalance: [AccountFunds], unusedFunds: [AccountFunds]) {
-		self.status = status
+    public init(outstandingBalance: [AccountFunds], unusedFunds: [AccountFunds]) {
         self.outstandingBalance = outstandingBalance
         self.unusedFunds = unusedFunds
 		super.init()
@@ -95,13 +94,13 @@ open class Account: DomainResource {
 							owner: Reference? = nil,
 							partOf: Reference? = nil,
 							servicePeriod: Period? = nil,
-							status: FHIRPrimitive<AccountStatus>,
+							status: FHIRPrimitive<AccountStatus>? = nil,
 							subject: [Reference]? = nil,
 							text: Narrative? = nil,
 							type: CodeableConcept? = nil,
                             unusedFunds: [AccountFunds])
 	{
-        self.init(status: status, outstandingBalance: outstandingBalance, unusedFunds: unusedFunds)
+        self.init(outstandingBalance: outstandingBalance, unusedFunds: unusedFunds)
 		self.contained = contained
 		self.coverage = coverage
 		self.description_fhir = description_fhir
@@ -117,6 +116,7 @@ open class Account: DomainResource {
 		self.owner = owner
 		self.partOf = partOf
 		self.servicePeriod = servicePeriod
+        self.status = status
 		self.subject = subject
 		self.text = text
 		self.type = type
@@ -154,7 +154,7 @@ open class Account: DomainResource {
 		self.owner = try Reference(from: _container, forKeyIfPresent: .owner)
 		self.partOf = try Reference(from: _container, forKeyIfPresent: .partOf)
 		self.servicePeriod = try Period(from: _container, forKeyIfPresent: .servicePeriod)
-		self.status = try FHIRPrimitive<AccountStatus>(from: _container, forKey: .status, auxiliaryKey: ._status)
+		self.status = try FHIRPrimitive<AccountStatus>(from: _container, forKeyIfPresent: .status, auxiliaryKey: ._status)
 		self.subject = try [Reference](from: _container, forKeyIfPresent: .subject)
 		self.type = try CodeableConcept(from: _container, forKeyIfPresent: .type)
         self.unusedFunds = try [AccountFunds](from: _container, forKey: .unusedFunds)
@@ -175,7 +175,7 @@ open class Account: DomainResource {
 		try owner?.encode(on: &_container, forKey: .owner)
 		try partOf?.encode(on: &_container, forKey: .partOf)
 		try servicePeriod?.encode(on: &_container, forKey: .servicePeriod)
-		try status.encode(on: &_container, forKey: .status, auxiliaryKey: ._status)
+		try status?.encode(on: &_container, forKey: .status, auxiliaryKey: ._status)
 		try subject?.encode(on: &_container, forKey: .subject)
 		try type?.encode(on: &_container, forKey: .type)
         try unusedFunds.encode(on: &_container, forKey: .unusedFunds)
